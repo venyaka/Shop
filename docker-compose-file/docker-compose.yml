@@ -1,0 +1,51 @@
+name: "Shop"
+
+services:
+  backend:
+    image: backend:0.0.1
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - ${BACKEND_PORT}
+    depends_on:
+      - db
+    environment:
+      - SERVER_PORT={SERVER_PORT}
+      - POSTGRES_URL={POSTGRES_URL}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    container_name: shop_backend
+    networks:
+      - global_net
+
+  db:
+    image: postgres:12.12-alpine
+    ports:
+      - ${POSTGRES_PORT}
+    volumes:
+      - /home/user/shop/pgdata_ci:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: ${PGDATA}
+    container_name: shop_db
+    restart: always
+    networks:
+      - global_net
+
+  pgadmin:
+    container_name: shop_pgadmin4
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - ${PGADMIN_PORT}
+    networks:
+      - global_net
+
+networks:
+  global_net:
