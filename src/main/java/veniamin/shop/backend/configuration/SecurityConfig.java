@@ -45,26 +45,34 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return
-                httpSecurity.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                        .addFilterAfter(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                        .addFilterAfter(refreshTokenFilter, JwtTokenFilter.class)
-                        .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class)
-                        .exceptionHandling(Customizer.withDefaults())
-                        .authorizeHttpRequests(c ->
-                                c.requestMatchers("/admin/metrics/**").hasAuthority("ADMIN")
-                                        .requestMatchers(antMatcher(HttpMethod.GET, "/products/**")).authenticated()
-                                        .requestMatchers("/products/**").hasAuthority("ADMIN"))
-
-
-                        .cors(Customizer.withDefaults())
-                        .csrf(csrf -> csrf.disable())
-                        .logout(c -> c.invalidateHttpSession(true)
-                                .clearAuthentication(true))
-                        .sessionManagement(c -> c.maximumSessions(1))
-                        .authorizeHttpRequests((requests) -> requests //*
-                        .anyRequest().permitAll()) //*
-                        .build();
+        return httpSecurity
+                .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterAfter(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(refreshTokenFilter, JwtTokenFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(Customizer.withDefaults())
+                .authorizeHttpRequests(c ->
+                        c
+                                // Доступ к авторизации открыт всем
+                                .requestMatchers("/api/authorize/**").permitAll()
+                                // Доступ к Swagger открыт всем
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
+                                // USER: просмотр категорий и поиск продуктов
+                                .requestMatchers(HttpMethod.GET, "/api/categories/**").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyAuthority("USER", "ADMIN")
+                                // ADMIN: полный доступ к продуктам и категориям
+                                .requestMatchers("/api/products/**").hasAuthority("ADMIN")
+                                .requestMatchers("/api/categories/**").hasAuthority("ADMIN")
+                                // Остальные запросы запрещены
+                                .anyRequest().denyAll()
+                )
+                .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
+                .logout(c -> c.invalidateHttpSession(true)
+                        .clearAuthentication(true))
+                .sessionManagement(c -> c.maximumSessions(1))
+                .build();
     }
 
 //    @Bean
