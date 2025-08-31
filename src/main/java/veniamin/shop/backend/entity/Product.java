@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "products")
 @Getter
@@ -26,16 +28,23 @@ public class Product {
     @Column
     private Double price;
 
-    @Column
-    private String imageUrl;
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = File.class)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    private File image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productCategory", referencedColumnName = "id")
     private ProductCategory productCategory;
 
     @Column
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @Column
     private Boolean isActive;
+
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class ProductCreateReqDTO {
-    
+
     private String name;
 
     private String description;
@@ -17,4 +17,8 @@ public class ProductCreateReqDTO {
     private Long categoryId;
 
     private String categoryName;
+
+    private Boolean isActive;
+
+    private Long imageId;
 }

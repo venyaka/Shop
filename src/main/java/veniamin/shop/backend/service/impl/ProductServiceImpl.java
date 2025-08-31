@@ -6,12 +6,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import veniamin.shop.backend.dto.ProductDTO;
 import veniamin.shop.backend.dto.request.ProductCreateReqDTO;
+import veniamin.shop.backend.entity.File;
+import veniamin.shop.backend.entity.FileType;
 import veniamin.shop.backend.entity.Product;
 import veniamin.shop.backend.entity.ProductCategory;
 import veniamin.shop.backend.exception.BadRequestException;
 import veniamin.shop.backend.exception.NotFoundException;
+import veniamin.shop.backend.exception.errors.BadRequestError;
 import veniamin.shop.backend.repository.ProductRepository;
 import veniamin.shop.backend.repository.ProductCategoryRepository;
+import veniamin.shop.backend.service.FileService;
 import veniamin.shop.backend.service.ProductService;
 
 import java.util.List;
@@ -23,6 +27,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
+    private final FileService fileService;
 
     @Override
     public ProductDTO createProduct(ProductCreateReqDTO productCreateDTO) {
@@ -36,6 +41,23 @@ public class ProductServiceImpl implements ProductService {
         product.setName(productCreateDTO.getName());
         product.setDescription(productCreateDTO.getDescription());
         product.setPrice(productCreateDTO.getPrice());
+
+        if ((null != productCreateDTO.getImageId())) {
+            File newAvatar = fileService.findById(productCreateDTO.getImageId());
+
+            if (!(FileType.IMAGE).equals(newAvatar.getFileType())) {
+                throw new BadRequestException(BadRequestError.FILE_MUST_BE_IMAGE);
+            }
+
+            product.setImage(newAvatar);
+        }
+
+
+        if (productCreateDTO.getIsActive() != null) {
+            product.setIsActive(productCreateDTO.getIsActive());
+        } else {
+            product.setIsActive(true);
+        }
         if (productCreateDTO.getCategoryId() != null) {
             ProductCategory category = productCategoryRepository.findById(productCreateDTO.getCategoryId())
                     .orElseThrow(() -> new NotFoundException("Категория не найдена", "CATEGORY_NOT_FOUND"));
@@ -66,11 +88,23 @@ public class ProductServiceImpl implements ProductService {
         if (productDto.getPrice() != null) {
             product.setPrice(productDto.getPrice());
         }
+        if (productDto.getIsActive() != null) {
+            product.setIsActive(productDto.getIsActive());
+        }
         if (productDto.getCategoryId() != null) {
             ProductCategory category = productCategoryRepository.findById(productDto.getCategoryId())
                     .orElseThrow(() -> new NotFoundException("Категория не найдена", "CATEGORY_NOT_FOUND"));
             product.setProductCategory(category);
         }
+
+        if ((null != productDto.getImageId())) {
+            File newAvatar = fileService.findById(productDto.getImageId());
+            if (!(FileType.IMAGE).equals(newAvatar.getFileType())) {
+                throw new BadRequestException(BadRequestError.FILE_MUST_BE_IMAGE);
+            }
+            product.setImage(newAvatar);
+        }
+
         Product savedProduct = productRepository.save(product);
         return toDTO(savedProduct);
     }
