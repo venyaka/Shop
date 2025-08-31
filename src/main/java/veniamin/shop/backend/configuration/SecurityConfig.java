@@ -64,6 +64,7 @@ public class SecurityConfig {
                                 // ADMIN: полный доступ к продуктам и категориям
                                 .requestMatchers("/api/products/**").hasAuthority("ADMIN")
                                 .requestMatchers("/api/categories/**").hasAuthority("ADMIN")
+                                .requestMatchers("/api/file/**").hasAuthority("ADMIN")
                                 // Остальные запросы запрещены
                                 .anyRequest().denyAll()
                 )
