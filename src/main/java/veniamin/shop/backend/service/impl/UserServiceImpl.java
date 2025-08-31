@@ -23,9 +23,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository
-                .findById(Long.valueOf(id))
+                .findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(NotFoundError.USER_NOT_FOUND));
     }
 
