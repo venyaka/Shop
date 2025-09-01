@@ -16,9 +16,5 @@ public class ProductCreateReqDTO {
 
     private Long categoryId;
 
-    private String categoryName;
-
     private Boolean isActive;
-
-    private Long imageId;
 }

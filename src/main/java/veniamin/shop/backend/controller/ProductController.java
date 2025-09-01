@@ -2,11 +2,14 @@ package veniamin.shop.backend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import veniamin.shop.backend.constant.PathConstants;
 import veniamin.shop.backend.dto.ProductDTO;
 import veniamin.shop.backend.dto.request.ProductCreateReqDTO;
+import veniamin.shop.backend.dto.response.ProductRespDTO;
 import veniamin.shop.backend.service.ProductService;
 
 import java.util.List;
@@ -17,17 +20,17 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Создание нового товара")
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductCreateReqDTO productCreateDTO) {
-        ProductDTO created = productService.createProduct(productCreateDTO);
+    public ResponseEntity<ProductRespDTO> createProduct(@ModelAttribute ProductCreateReqDTO productCreateDTO, @RequestParam(name = "image", required = false) MultipartFile image) {
+        ProductRespDTO created = productService.createProduct(productCreateDTO, image);
         return ResponseEntity.ok(created);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Обновление товара по ID")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
-        ProductDTO updated = productService.updateProduct(id, productDTO);
+    public ResponseEntity<ProductRespDTO> updateProduct(@PathVariable Long id, @ModelAttribute ProductDTO productDTO, @RequestParam(name = "image", required = false) MultipartFile image) {
+        ProductRespDTO updated = productService.updateProduct(id, productDTO, image);
         return ResponseEntity.ok(updated);
     }
 
@@ -40,13 +43,13 @@ public class ProductController {
 
     @GetMapping
     @Operation(summary = "Получение списка товаров с фильтрацией по имени, категории и цене")
-    public ResponseEntity<List<ProductDTO>> getProducts(
+    public ResponseEntity<List<ProductRespDTO>> getProducts(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Double priceFrom,
             @RequestParam(required = false) Double priceTo
     ) {
-        List<ProductDTO> products = productService.getProducts(name, categoryId, priceFrom, priceTo);
+        List<ProductRespDTO> products = productService.getProducts(name, categoryId, priceFrom, priceTo);
         return ResponseEntity.ok(products);
     }
 }
