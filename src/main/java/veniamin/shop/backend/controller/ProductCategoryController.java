@@ -1,5 +1,6 @@
 package veniamin.shop.backend.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,24 +18,28 @@ public class ProductCategoryController {
     private final ProductCategoryService categoryService;
 
     @PostMapping
+    @Operation(summary = "Создание категории товара")
     public ResponseEntity<ProductCategory> createCategory(@RequestBody ProductCategoryCreateReqDTO productCategoryCreateDTO) {
         ProductCategory created = categoryService.createCategory(productCategoryCreateDTO);
         return ResponseEntity.ok(created);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Обновление категории товара по ID")
     public ResponseEntity<ProductCategory> updateCategory(@PathVariable Long id, @RequestBody ProductCategory category) {
         ProductCategory updated = categoryService.updateCategory(id, category);
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Удаление категории товара по ID")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
+    @Operation(summary = "Получение списка всех категорий товаров")
     public ResponseEntity<List<ProductCategory>> getAllCategories() {
         List<ProductCategory> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
