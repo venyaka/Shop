@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import veniamin.shop.backend.dto.FileDTO;
 import veniamin.shop.backend.dto.ProductDTO;
 import veniamin.shop.backend.dto.request.ProductCreateReqDTO;
+import veniamin.shop.backend.dto.response.ProductRespDTO;
 import veniamin.shop.backend.entity.File;
 import veniamin.shop.backend.entity.FileType;
 import veniamin.shop.backend.entity.Product;
@@ -19,7 +22,6 @@ import veniamin.shop.backend.service.FileService;
 import veniamin.shop.backend.service.ProductService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +32,8 @@ public class ProductServiceImpl implements ProductService {
     private final FileService fileService;
 
     @Override
-    public ProductDTO createProduct(ProductCreateReqDTO productCreateDTO) {
+    public ProductRespDTO createProduct(ProductCreateReqDTO productCreateDTO, MultipartFile image) {
+
         if (productCreateDTO.getName() == null || productCreateDTO.getName().isEmpty()) {
             throw new BadRequestException("Требуется указать название продукта", "PRODUCT_NAME_REQUIRED");
         }
@@ -42,16 +45,16 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productCreateDTO.getDescription());
         product.setPrice(productCreateDTO.getPrice());
 
-        if ((null != productCreateDTO.getImageId())) {
-            File newAvatar = fileService.findById(productCreateDTO.getImageId());
+        if (image != null) {
+            FileDTO newImageDTO = fileService.save(image);
+            File newImage = fileService.findById(newImageDTO.getId());
 
-            if (!(FileType.IMAGE).equals(newAvatar.getFileType())) {
+            if (!(FileType.IMAGE).equals(newImage.getFileType())) {
                 throw new BadRequestException(BadRequestError.FILE_MUST_BE_IMAGE);
             }
-
-            product.setImage(newAvatar);
+            product.setImage(newImage);
         }
-
+        product = productRepository.save(product);
 
         if (productCreateDTO.getIsActive() != null) {
             product.setIsActive(productCreateDTO.getIsActive());
@@ -64,7 +67,10 @@ public class ProductServiceImpl implements ProductService {
             product.setProductCategory(category);
         }
         Product savedProduct = productRepository.save(product);
-        return toDTO(savedProduct);
+        if (product.getImage() != null) {
+            savedProduct.setImage(product.getImage());
+        }
+        return toRespDTO(savedProduct);
     }
 
     @Override
@@ -76,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(Long productId, ProductDTO productDto) {
+    public ProductRespDTO updateProduct(Long productId, ProductDTO productDto, MultipartFile image) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Продукт не найден", "PRODUCT_NOT_FOUND"));
         if (productDto.getName() != null) {
@@ -105,12 +111,26 @@ public class ProductServiceImpl implements ProductService {
             product.setImage(newAvatar);
         }
 
+        if (image != null) {
+            FileDTO newImageDTO = fileService.save(image);
+            File newImage = fileService.findById(newImageDTO.getId());
+
+            if (!(FileType.IMAGE).equals(newImage.getFileType())) {
+                throw new BadRequestException(BadRequestError.FILE_MUST_BE_IMAGE);
+            }
+            product.setImage(newImage);
+        }
+        product = productRepository.save(product);
+
         Product savedProduct = productRepository.save(product);
-        return toDTO(savedProduct);
+        if (product.getImage() != null) {
+            savedProduct.setImage(product.getImage());
+        }
+        return toRespDTO(savedProduct);
     }
 
     @Override
-    public List<ProductDTO> getProducts(String name, Long categoryId, Double priceFrom, Double priceTo) {
+    public List<ProductRespDTO> getProducts(String name, Long categoryId, Double priceFrom, Double priceTo) {
         Specification<Product> spec = (root, query, cb) -> cb.conjunction();
         if (name != null && !name.isEmpty()) {
             spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
@@ -125,7 +145,7 @@ public class ProductServiceImpl implements ProductService {
             spec = spec.and((root, query, cb) -> cb.le(root.get("price"), priceTo));
         }
         List<Product> products = productRepository.findAll(spec);
-        return products.stream().map(this::toDTO).toList();
+        return products.stream().map(this::toRespDTO).toList();
     }
 
     private ProductDTO toDTO(Product product) {
@@ -134,6 +154,21 @@ public class ProductServiceImpl implements ProductService {
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
         dto.setPrice(product.getPrice());
+        if (product.getProductCategory() != null) {
+            dto.setCategoryId(product.getProductCategory().getId());
+            dto.setCategoryName(product.getProductCategory().getName());
+        }
+        return dto;
+    }
+
+    private ProductRespDTO toRespDTO(Product product) {
+        ProductRespDTO dto = new ProductRespDTO();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+        dto.setImageId(product.getImage().getId());
+        dto.setImageUrl(product.getImage().getRemoteUrl());
         if (product.getProductCategory() != null) {
             dto.setCategoryId(product.getProductCategory().getId());
             dto.setCategoryName(product.getProductCategory().getName());

@@ -1,17 +1,19 @@
 package veniamin.shop.backend.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import veniamin.shop.backend.dto.ProductDTO;
 import veniamin.shop.backend.dto.request.ProductCreateReqDTO;
+import veniamin.shop.backend.dto.response.ProductRespDTO;
 
 import java.util.List;
 
 public interface ProductService {
 
-    ProductDTO createProduct(ProductCreateReqDTO productCreateDTO);
+    ProductRespDTO createProduct(ProductCreateReqDTO productCreateDTO, MultipartFile image);
 
     void deleteProduct(Long productId);
 
-    ProductDTO updateProduct(Long productId, ProductDTO productDto);
+    ProductRespDTO updateProduct(Long productId, ProductDTO productDto, MultipartFile image);
 
-    List<ProductDTO> getProducts(String name, Long categoryId, Double priceFrom, Double priceTo);
+    List<ProductRespDTO> getProducts(String name, Long categoryId, Double priceFrom, Double priceTo);
 }
