@@ -62,7 +62,6 @@ public class UserServiceImpl implements UserService {
     public UserRespDTO getResponseDTO(User user) {
         UserRespDTO userRespDTO = new UserRespDTO();
         userRespDTO.setId(user.getId());
-        userRespDTO.setUsername(user.getUsername());
         userRespDTO.setEmail(user.getEmail());
         userRespDTO.setFirstName(user.getFirstName());
         userRespDTO.setLastName(user.getLastName());
@@ -79,11 +78,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getCurrentUser() {
-        String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (id == null || id.isEmpty()) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (email == null || email.isEmpty()) {
             throw new NotFoundException(NotFoundError.USER_NOT_FOUND);
         }
-        return userRepository.findById(Long.valueOf(id)).orElseThrow(() -> new NotFoundException(NotFoundError.USER_NOT_FOUND));
+        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(NotFoundError.USER_NOT_FOUND));
     }
 //    private User getCurrentUser(){
 //        String username = SecurityContextHolder.getContext().getAuthentication().getName();

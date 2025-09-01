@@ -61,6 +61,7 @@ public class SecurityConfig {
                                 // USER: просмотр категорий и поиск продуктов
                                 .requestMatchers(HttpMethod.GET, "/api/categories/**").hasAnyAuthority("USER", "ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers("/api/users/**").hasAnyAuthority("USER", "ADMIN")
                                 // ADMIN: полный доступ к продуктам и категориям
                                 .requestMatchers("/api/products/**").hasAuthority("ADMIN")
                                 .requestMatchers("/api/categories/**").hasAuthority("ADMIN")

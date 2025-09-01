@@ -5,5 +5,6 @@ public class PathConstants {
     public static final String PRODUCT_CONTROLLER_PATH = "/api/products";
     public static final String PRODUCT_CATEGORY_CONTROLLER_PATH = "/api/categories";
     public static final String FILE_CONTROLLER_PATH = "/api/file";
+    public static final String USER_CONTROLLER_PATH = "/api/users";
 
 }
