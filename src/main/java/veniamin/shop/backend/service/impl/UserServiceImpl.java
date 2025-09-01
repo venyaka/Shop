@@ -7,6 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import veniamin.shop.backend.dto.request.UpdateCurrentUserReqDTO;
 import veniamin.shop.backend.dto.response.UserRespDTO;
 import veniamin.shop.backend.entity.User;
 import veniamin.shop.backend.exception.NotFoundException;
@@ -14,6 +16,8 @@ import veniamin.shop.backend.exception.errors.NotFoundError;
 import veniamin.shop.backend.repository.UserRepository;
 import veniamin.shop.backend.service.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -35,6 +39,27 @@ public class UserServiceImpl implements UserService {
         User user = this.getCurrentUser();
         return getResponseDTO(user);
     }
+
+    @Override
+    @Transactional
+    public UserRespDTO updateCurrentUser(UpdateCurrentUserReqDTO updateCurrentUserReqDTO) {
+        User user = this.getCurrentUser();
+
+        user = userRepository.save(user);
+
+        if ( updateCurrentUserReqDTO.getFirstName() != null ) {
+            user.setFirstName( updateCurrentUserReqDTO.getFirstName() );
+        }
+        if ( updateCurrentUserReqDTO.getLastName() != null ) {
+            user.setLastName( updateCurrentUserReqDTO.getLastName() );
+        }
+        userRepository.save(user);
+
+        UserRespDTO resultDto = getResponseDTO(user);
+
+        return resultDto;
+    }
+
 
     @Override
     @Transactional
