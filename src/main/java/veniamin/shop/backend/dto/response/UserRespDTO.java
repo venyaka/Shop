@@ -3,6 +3,8 @@ package veniamin.shop.backend.dto.response;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.util.Set;
+
 
 @Data
 public class UserRespDTO {
@@ -14,4 +16,6 @@ public class UserRespDTO {
     private String firstName;
 
     private String lastName;
+
+    private Set<String> roles;
 }
