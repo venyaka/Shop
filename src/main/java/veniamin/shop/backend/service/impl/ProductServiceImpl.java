@@ -167,8 +167,14 @@ public class ProductServiceImpl implements ProductService {
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
         dto.setPrice(product.getPrice());
-        dto.setImageId(product.getImage().getId());
-        dto.setImageUrl(product.getImage().getRemoteUrl());
+        if (product.getImage() != null) {
+            dto.setImageId(product.getImage().getId());
+            dto.setImageUrl(product.getImage().getRemoteUrl());
+        } else {
+            dto.setImageId(0L);
+            dto.setImageUrl("api/file/default.jpg");
+        }
+        dto.setIsActive(product.getIsActive());
         if (product.getProductCategory() != null) {
             dto.setCategoryId(product.getProductCategory().getId());
             dto.setCategoryName(product.getProductCategory().getName());

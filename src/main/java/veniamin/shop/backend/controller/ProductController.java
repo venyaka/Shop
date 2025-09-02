@@ -22,14 +22,19 @@ public class ProductController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Создание нового товара")
-    public ResponseEntity<ProductRespDTO> createProduct(@ModelAttribute ProductCreateReqDTO productCreateDTO, @RequestParam(name = "image", required = false) MultipartFile image) {
+    public ResponseEntity<ProductRespDTO> createProduct(
+        @ModelAttribute ProductCreateReqDTO productCreateDTO,
+        @RequestPart(value = "image", required = false) MultipartFile image) {
         ProductRespDTO created = productService.createProduct(productCreateDTO, image);
         return ResponseEntity.ok(created);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Обновление товара по ID")
-    public ResponseEntity<ProductRespDTO> updateProduct(@PathVariable Long id, @ModelAttribute ProductDTO productDTO, @RequestParam(name = "image", required = false) MultipartFile image) {
+    public ResponseEntity<ProductRespDTO> updateProduct(
+        @PathVariable Long id,
+        @ModelAttribute ProductDTO productDTO,
+        @RequestPart(value = "image", required = false) MultipartFile image) {
         ProductRespDTO updated = productService.updateProduct(id, productDTO, image);
         return ResponseEntity.ok(updated);
     }
@@ -53,4 +58,3 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 }
-
