@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>Каталог товаров | Shop</title>
+</head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">Каталог товаров</h2>
+        <form id="productFilterForm" class="row g-3 mb-4">
+            <div class="col-md-4">
+                <input type="text" class="form-control" id="searchName" placeholder="Поиск по названию">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="filterCategory">
+                    <option value="">Все категории</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="number" class="form-control" id="priceFrom" placeholder="Цена от">
+            </div>
+            <div class="col-md-2">
+                <input type="number" class="form-control" id="priceTo" placeholder="Цена до">
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">Найти</button>
+            </div>
+        </form>
+        <div id="productsList" class="row g-4">
+            <!-- Список товаров будет подгружаться через JS -->
+        </div>
+        <div id="productsError" class="alert alert-danger mt-3" style="display:none;"></div>
+    </div>
+    <div th:replace="~{layout :: footer}"></div>
+    <script th:src="@{/js/products.js}"></script>
+</body>
+</html>

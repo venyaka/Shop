@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>Профиль | Shop</title>
+</head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">Профиль пользователя</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Информация о пользователе</h5>
+                        <div class="mb-2"><b>Имя:</b> <span id="profileFirstName">-</span></div>
+                        <div class="mb-2"><b>Фамилия:</b> <span id="profileLastName">-</span></div>
+                        <div class="mb-2"><b>Email:</b> <span id="profileEmail">-</span></div>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Редактировать профиль</h5>
+                        <form id="profileEditForm">
+                            <div class="mb-3">
+                                <label for="editFirstName" class="form-label">Имя</label>
+                                <input type="text" class="form-control" id="editFirstName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editLastName" class="form-label">Фамилия</label>
+                                <input type="text" class="form-control" id="editLastName" required>
+                            </div>
+                            <div class="mb-3 text-danger" id="profileEditError" style="display:none;"></div>
+                            <button type="submit" class="btn btn-primary w-100">Сохранить изменения</button>
+                        </form>
+                    </div>
+                </div>
+                <button class="btn btn-outline-danger w-100" id="logoutBtn">Выйти из аккаунта</button>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{layout :: footer}"></div>
+    <script th:src="@{/js/profile.js}"></script>
+</body>
+</html>

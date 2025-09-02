@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>Главная | Shop</title>
+</head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h1 class="display-4">Добро пожаловать в магазин Shop!</h1>
+                <p class="lead mt-4">У нас вы найдете лучшие товары по отличным ценам. Быстрая регистрация, удобный каталог, управление для администраторов.</p>
+                <div class="mt-5">
+                    <a href="/products" class="btn btn-primary btn-lg mx-2">Каталог товаров</a>
+                    <a href="/login" class="btn btn-outline-secondary btn-lg mx-2" id="btn-login">Войти / Зарегистрироваться</a>
+                    <a href="/profile" class="btn btn-outline-success btn-lg mx-2 d-none" id="btn-profile">Профиль</a>
+                    <a href="/admin" class="btn btn-outline-danger btn-lg mx-2 d-none" id="btn-admin">Админ-панель</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{layout :: footer}"></div>
+    <script th:src="@{/js/common.js}"></script>
+</body>
+</html>
