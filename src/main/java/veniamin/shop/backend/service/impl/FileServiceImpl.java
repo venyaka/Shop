@@ -85,7 +85,7 @@ public class FileServiceImpl implements FileService {
             }
 
             String subDirName = f.getFileType().name().toLowerCase();
-            f.setRemoteUrl(remoteUrl + "/" + subDirName + "/" + fileName);
+            f.setRemoteUrl("/api/file/name/" + fileName);
             Path pathToLocalFile = root.resolve(subDirName).resolve(fileName);
 
             f.setUrl(pathToLocalFile.toString());

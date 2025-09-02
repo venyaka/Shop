@@ -17,7 +17,6 @@ import veniamin.shop.backend.service.FileService;
 @RequiredArgsConstructor
 @RequestMapping(PathConstants.FILE_CONTROLLER_PATH)
 @PreAuthorize("isAuthenticated()")
-@Tag(name = "Файл")
 public class FileController {
 
     private final FileService fileService;
