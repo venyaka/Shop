@@ -42,8 +42,6 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
     private final JwtUtils jwtUtils;
 
-    private static final Logger loggerAuth = LoggerFactory.getLogger("authLogger");
-
 
     @Override
     public ResponseEntity<TokenRespDTO> authorizeUser(UserAuthorizeReqDTO userAuthorizeDTO) {
@@ -70,7 +68,11 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 
         sessionService.saveNewSession(user.getId());
 
-        return new ResponseEntity<>(tokenDTO, HttpStatus.OK);
+        // Возвращаем токены в заголовках
+        return ResponseEntity.ok()
+                .header("Authorization", "Bearer " + jwtToken)
+                .header("Refresh", "Bearer " + refreshToken)
+                .body(tokenDTO);
     }
 
     @Override
