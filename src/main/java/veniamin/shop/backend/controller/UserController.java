@@ -4,10 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseCookie;
 import veniamin.shop.backend.constant.PathConstants;
 import veniamin.shop.backend.dto.request.UpdateCurrentUserReqDTO;
 import veniamin.shop.backend.dto.response.UserRespDTO;
 import veniamin.shop.backend.service.UserService;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,7 +41,13 @@ public class UserController {
 
     @PostMapping("/logout")
     @Operation(summary = "Выход пользователя из системы")
-    public void logout() {
+    public void logout(HttpServletResponse response) throws IOException {
         userService.logout();
+        // Стереть cookies на клиенте
+        ResponseCookie access = ResponseCookie.from("accessToken", "").httpOnly(true).path("/").maxAge(0).sameSite("Lax").build();
+        ResponseCookie refresh = ResponseCookie.from("refreshToken", "").httpOnly(true).path("/").maxAge(0).sameSite("Lax").build();
+        response.addHeader("Set-Cookie", access.toString());
+        response.addHeader("Set-Cookie", refresh.toString());
+        response.sendRedirect("/login");
     }
 }
