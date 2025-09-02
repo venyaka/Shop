@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>Админ-панель | Shop</title>
+</head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">Админ-панель</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="list-group">
+                    <a href="/admin/categories" class="list-group-item list-group-item-action">Управление категориями</a>
+                    <a href="/admin/products" class="list-group-item list-group-item-action">Управление товарами</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

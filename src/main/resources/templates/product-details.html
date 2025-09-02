@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>Товар | Shop</title>
+</head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+    <div class="container mt-5">
+        <div id="productDetails" class="row justify-content-center">
+            <!-- Данные товара будут подгружаться через JS -->
+        </div>
+        <div id="productError" class="alert alert-danger mt-3" style="display:none;"></div>
+    </div>
+    <div th:replace="~{layout :: footer}"></div>
+    <script th:src="@{/js/product-details.js}"></script>
+</body>
+</html>

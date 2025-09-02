@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>Категории | Админ-панель</title>
+</head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">Управление категориями</h2>
+        <div class="mb-3 text-end">
+            <button class="btn btn-success" id="createCategoryBtn">Создать категорию</button>
+        </div>
+        <div id="categoriesError" class="alert alert-danger" style="display:none;"></div>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Наименование</th>
+                    <th>Описание</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody id="categoriesList">
+                <!-- Категории будут подгружаться через JS -->
+            </tbody>
+        </table>
+    </div>
+    <!-- Модальное окно для создания/редактирования категории -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="categoryModalLabel">Категория</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="categoryForm">
+              <input type="hidden" id="categoryId">
+              <div class="mb-3">
+                <label for="categoryName" class="form-label">Наименование</label>
+                <input type="text" class="form-control" id="categoryName" required>
+              </div>
+              <div class="mb-3">
+                <label for="categoryDescription" class="form-label">Краткое описание</label>
+                <input type="text" class="form-control" id="categoryDescription">
+              </div>
+              <div class="mb-3 text-danger" id="categoryFormError" style="display:none;"></div>
+              <button type="submit" class="btn btn-primary w-100" id="saveCategoryBtn">Сохранить</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div th:replace="~{layout :: footer}"></div>
+    <script th:src="@{/js/admin-categories.js}"></script>
+</body>
+</html>

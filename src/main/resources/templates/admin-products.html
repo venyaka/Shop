@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>Товары | Админ-панель</title>
+</head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">Управление товарами</h2>
+        <div class="mb-3 text-end">
+            <button class="btn btn-success" id="createProductBtn">Создать товар</button>
+        </div>
+        <div id="productsError" class="alert alert-danger" style="display:none;"></div>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Наименование</th>
+                    <th>Цена</th>
+                    <th>Категория</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody id="adminProductsList">
+                <!-- Товары будут подгружаться через JS -->
+            </tbody>
+        </table>
+    </div>
+    <!-- Модальное окно для создания/редактирования товара -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="productModalLabel">Товар</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="productForm" enctype="multipart/form-data">
+              <input type="hidden" id="productId">
+              <div class="mb-3">
+                <label for="productName" class="form-label">Наименование</label>
+                <input type="text" class="form-control" id="productName" required>
+              </div>
+              <div class="mb-3">
+                <label for="productDescription" class="form-label">Описание</label>
+                <textarea class="form-control" id="productDescription"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="productPrice" class="form-label">Цена</label>
+                <input type="number" class="form-control" id="productPrice" required>
+              </div>
+              <div class="mb-3">
+                <label for="productCategory" class="form-label">Категория</label>
+                <select class="form-select" id="productCategory" required>
+                  <!-- Категории будут подгружаться через JS -->
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="productImage" class="form-label">Изображение</label>
+                <input type="file" class="form-control" id="productImage" accept="image/*">
+              </div>
+              <div class="mb-3">
+                <label for="productStatus" class="form-label">Статус</label>
+                <select class="form-select" id="productStatus">
+                  <option value="true">Активен</option>
+                  <option value="false">Не активен</option>
+                </select>
+              </div>
+              <div class="mb-3 text-danger" id="productFormError" style="display:none;"></div>
+              <button type="submit" class="btn btn-primary w-100" id="saveProductBtn">Сохранить</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div th:replace="~{layout :: footer}"></div>
+    <script th:src="@{/js/admin-products.js}"></script>
+</body>
+</html>
