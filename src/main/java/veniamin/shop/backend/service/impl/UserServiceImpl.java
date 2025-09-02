@@ -3,22 +3,25 @@ package veniamin.shop.backend.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import veniamin.shop.backend.dto.request.UpdateCurrentUserReqDTO;
 import veniamin.shop.backend.dto.response.UserRespDTO;
+import veniamin.shop.backend.entity.Role;
 import veniamin.shop.backend.entity.User;
+import veniamin.shop.backend.exception.AuthorizeException;
 import veniamin.shop.backend.exception.NotFoundException;
+import veniamin.shop.backend.exception.errors.AuthorizedError;
 import veniamin.shop.backend.exception.errors.NotFoundError;
 import veniamin.shop.backend.repository.UserRepository;
 import veniamin.shop.backend.service.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -55,9 +58,7 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.save(user);
 
-        UserRespDTO resultDto = getResponseDTO(user);
-
-        return resultDto;
+        return getResponseDTO(user);
     }
 
 
@@ -90,6 +91,8 @@ public class UserServiceImpl implements UserService {
         userRespDTO.setEmail(user.getEmail());
         userRespDTO.setFirstName(user.getFirstName());
         userRespDTO.setLastName(user.getLastName());
+        Set<String> roleNames = user.getRoles().stream().map(Role::name).collect(Collectors.toSet());
+        userRespDTO.setRoles(roleNames);
         return userRespDTO;
     }
 
@@ -103,15 +106,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getCurrentUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (email == null || email.isEmpty()) {
-            throw new NotFoundException(NotFoundError.USER_NOT_FOUND);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getName() == null || "anonymousUser".equals(authentication.getName())) {
+            throw new AuthorizeException(AuthorizedError.NOT_CORRECT_TOKEN);
         }
+        String email = authentication.getName();
         return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(NotFoundError.USER_NOT_FOUND));
     }
-//    private User getCurrentUser(){
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        User user = userRepository.findByUsername(username).get();
-//        return user;
-//    }
 }
