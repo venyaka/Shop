@@ -10,11 +10,8 @@ services:
       - ${BACKEND_PORT}
     depends_on:
       - db
-    environment:
-      - SERVER_PORT={SERVER_PORT}
-      - POSTGRES_URL={POSTGRES_URL}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    env_file:
+      - ../credentials-docker.env
     container_name: shop_backend
     networks:
       - global_net
