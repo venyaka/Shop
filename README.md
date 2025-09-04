@@ -27,15 +27,16 @@
 - `src/main/resources/static/js` — JS для фронта
 - `docker-compose-file/docker-compose.yml` — Docker Compose для запуска
 - `credentials-docker.env` — переменные окружения для Docker
+- `credentials-dev.env` — переменные окружения для локального запуска
 - `.github/workflows/deploy.yml` — workflow для автоматического деплоя
 
 ---
 
 ## Быстрый старт (локально)
 1. Установи JDK 17+ и Maven
-2. Создай файл credentials-dev.env и подставь свои значения:
+2. Создай файл credentials-docker.env и подставь свои значения:
 
-Пример `credentials-dev.env`:
+Пример `credentials-docker.env`:
 ```
 SERVER_PORT=8184
 BACKEND_PORT=8184:8184
@@ -43,7 +44,7 @@ BACKEND_PORT=8184:8184
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=12345
 POSTGRES_DB=shop
-POSTGRES_URL=jdbc:postgresql://db:5432/shop
+POSTGRES_URL=jdbc:postgresql://localhost:9877/shop
 POSTGRES_PORT=9877:5432
 
 PGDATA=/var/lib/postgresql/data/pgdata
@@ -68,6 +69,10 @@ JWT_SECRET=<your-jwt-secret>
 ## Запуск через Docker
 1. Установи Docker и Docker Compose
 2. Проверь файл `credentials-docker.env` (доступы к БД, почте и т.д.)
+
+Тогда в `credentials-docker.env` должно быть:
+`POSTGRES_URL=jdbc:postgresql://db:5432/shop`
+
 3. Запусти:
    ```
    cd docker-compose-file
