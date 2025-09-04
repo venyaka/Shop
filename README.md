@@ -33,7 +33,8 @@
 
 ## Быстрый старт (локально)
 1. Установи JDK 17+ и Maven
-2. Создай файл credentials-dev.env и подставь свои значения: 
+2. Создай файл credentials-dev.env и подставь свои значения:
+
 Пример `credentials-dev.env`:
 ```
 SERVER_PORT=8184
