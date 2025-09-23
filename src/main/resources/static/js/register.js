@@ -7,6 +7,10 @@ $(function() {
         var email = $('#email').val();
         var password = $('#password').val();
         var confirmPassword = $('#confirmPassword').val();
+        if (password.length < 8 || password.length > 24) {
+            $('#registerError').text('Пароль должен содержать от 8 до 24 символов').show();
+            return;
+        }
         if (password !== confirmPassword) {
             $('#registerError').text('Пароли не совпадают').show();
             return;
