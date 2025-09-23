@@ -20,7 +20,7 @@ jobs:
 
     - name: Deploy over SSH
       run: |
-        ssh -o StrictHostKeyChecking=no deployuser@206.189.47.162 "
+        ssh -o StrictHostKeyChecking=no deployuser@128.199.122.161 "
           set -x
           cd /opt/app &&
           git checkout master &&
